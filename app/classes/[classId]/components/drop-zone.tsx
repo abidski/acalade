@@ -1,21 +1,22 @@
 "use client";
+
 import { FileUp, FileText, XCircle, CheckCircle } from "lucide-react";
 import { useState, useRef } from "react";
 import { type DragEvent } from "react";
 
 interface DropZoneProp {
-  setResume: (file: File | null) => void;
-  setResumeText: (text: string) => void;
-  resumeText: string;
+  link: string;
+  setLink: (text: string) => void;
+  file: File | null;
+  setFile: (file: File | null) => void;
 }
 
-function DropZone({ setResume, setResumeText, resumeText }: DropZoneProp) {
-  const [file, setFile] = useState<File | null>(null);
+function DropZone({ link, setLink, file, setFile }: DropZoneProp) {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const FILE_TYPES = ["application/pdf", "text/plain"];
+  const FILE_TYPES = ["application/pdf"];
 
   function handleBrowse() {
     inputRef.current?.click();
@@ -43,7 +44,6 @@ function DropZone({ setResume, setResumeText, resumeText }: DropZoneProp) {
 
     setError(null);
     setFile(file);
-    setResume(file);
   }
 
   function onDrop(e: DragEvent<HTMLDivElement>) {
@@ -56,18 +56,17 @@ function DropZone({ setResume, setResumeText, resumeText }: DropZoneProp) {
     }
 
     const droppedFile = e.dataTransfer.files[0];
-    console.log(droppedFile);
 
     checkFile(droppedFile);
   }
   return (
     <>
-      <div className="mt-8 w-full flex flex-col flex-1 min-h-0">
+      <div className="my-8 w-full flex flex-col flex-1 min-h-0">
         <div className="flex">
           <FileText className="" />
           <p className="text-xl mb-4 pl-3 font-bold">Upload Resume</p>
         </div>
-        <div className=" ">
+        <div className="  border  shadow-sm w-full rounded-2xl p-8 flex flex-col flex-1 ">
           <input
             className="hidden"
             ref={inputRef}
@@ -79,15 +78,7 @@ function DropZone({ setResume, setResumeText, resumeText }: DropZoneProp) {
           />
           <div
             className={`flex flex-col items-center justify-center text-center mb-2 border-2 border-dashed  p-12 flex-1 rounded-2xl
-            ${
-              isDragging
-                ? "border-indigo-400 bg-indigo-50"
-                : file
-                  ? "border-green-300 bg-green-50"
-                  : error
-                    ? "border-red-300 bg-red-50"
-                    : "border-slate-300 bg-slate-50"
-            }`}
+            ${isDragging ? "" : file ? "" : error ? "" : ""}`}
             onDragOver={onDragOver}
             onDragLeave={onDragLeave}
             onDrop={onDrop}
@@ -102,16 +93,16 @@ function DropZone({ setResume, setResumeText, resumeText }: DropZoneProp) {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className=" h-px w-1/4 flex-1" />
-            <span className="m-3 font-bold text-xs ">OR PASTE TEXT</span>
-            <div className=" h-px bg-gray-200 w-1/4 flex-1" />
+            <div className=" h-px  w-1/4 flex-1" />
+            <span className="m-3 font-bold text-xs ">OR PASTE LINK</span>
+            <div className=" h-px  w-1/4 flex-1" />
           </div>
 
           <textarea
-            placeholder="Paste your resume ..."
-            className=" resize-none m-3 font-normal text-s  border  rounded-2xl  flex-1 p-4"
-            value={resumeText}
-            onChange={(e) => setResumeText(e.target.value)}
+            placeholder="Paste your link ..."
+            className=" resize-none m-3 font-normal text-s  border  rounded-2xl 0 flex-1 p-4"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
           ></textarea>
         </div>
       </div>
@@ -128,13 +119,13 @@ function DropZoneAccepted({
 }) {
   return (
     <>
-      <div className="flex w-12 h-12 rounded-xl items-center justify-center text-center bg-indigo-100 m-3">
+      <div className="flex w-12 h-12 rounded-xl items-center justify-center text-center  m-3">
         <CheckCircle className="" />
       </div>
-      <span className="font-bold text-lg">{file.name}</span>
+      <span className="font-bold text-lg ">{file.name}</span>
       <span className=" text-sm mt-1">PDF up to 10MB</span>
       <button
-        className=" mt-3 border  font-semibold py-2 px-4  rounded-2xl hover:bg-slate-100 transition-colors shadow-sm  duration-200 active:scale-[0.98]"
+        className=" mt-3 border  font-semibold py-2 px-4  rounded-2xl  transition-colors shadow-sm  duration-200 active:scale-[0.98]"
         onClick={handleBrowse}
       >
         Browse Files
@@ -151,13 +142,13 @@ function DropZoneError({
 }) {
   return (
     <>
-      <div className="flex w-12 h-12 rounded-xl items-center justify-center text-centerm-3">
+      <div className="flex w-12 h-12 rounded-xl items-center justify-center text-center  m-3">
         <XCircle className="" />
       </div>
       <span className="font-bold text-lg ">{errorMessage}</span>
-      <span className=" text-sm mt-1">PDF, DOCX up to 10MB</span>
+      <span className=" text-sm mt-1">PDF 10MB</span>
       <button
-        className=" mt-3 border  font-semibold py-2 px-4  rounded-2xl hover:bg-slate-100 transition-colors shadow-sm  duration-200 active:scale-[0.98]"
+        className=" mt-3 border  font-semibold py-2 px-4  rounded-2xl  transition-colors shadow-sm  duration-200 active:scale-[0.98]"
         onClick={handleBrowse}
       >
         Browse Files
@@ -172,9 +163,9 @@ function DropZoneDefault({ handleBrowse }: { handleBrowse: () => void }) {
         <FileUp className="" />
       </div>
       <span className="font-bold text-lg ">Drag and Drop resume here</span>
-      <span className=" text-sm mt-1">PDF, DOCX up to 10MB</span>
+      <span className=" text-sm mt-1">PDF up to 10MB</span>
       <button
-        className=" mt-3 border  font-semibold py-2 px-4  rounded-2xl hover:bg-slate-100 transition-colors shadow-sm  duration-200 active:scale-[0.98] "
+        className=" mt-3 border  font-semibold py-2 px-4 0 rounded-2xl  transition-colors shadow-sm  duration-200 active:scale-[0.98] "
         onClick={handleBrowse}
       >
         Browse Files

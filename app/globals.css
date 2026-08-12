@@ -23,7 +23,7 @@
 	  --destructive: #ef4444;
 	  --destructive-foreground: #f5f1eb;
 	  --border: #f5f1eb14;
-	  --input: #12121a;
+	  --input: var(--muted-foreground);
 	  --ring: #e879a3;
 	  --chart-1: #e879a3;
 	  --chart-2: #f5f1eb;

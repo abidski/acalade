@@ -1,19 +1,17 @@
-"use client";
 import NotesTable from "@/app/classes/[classId]/components/table";
-import { useState } from "react";
+import { AddResourceButton } from "@/app/classes/[classId]/components/add-resource";
+import { createClient } from "@/lib/supabase/server";
 
-import DropZone from "@/app/classes/[classId]/components/upload";
-export default function Dashboard() {
-  const [file, setFile] = useState<File | null>(null);
-  const [errorCode, setErrorCode] = useState<number | null>(null);
-  const [resumeText, setResumeText] = useState("");
+export default async function Dashboard({
+  params,
+}: {
+  params: Promise<{ classId: string }>;
+}) {
+  const { classId } = await params;
+
   return (
     <div>
-      <DropZone
-        setResume={setFile}
-        setResumeText={setResumeText}
-        resumeText={resumeText}
-      />
+      <AddResourceButton classId={classId} />
       <NotesTable />{" "}
     </div>
   );
