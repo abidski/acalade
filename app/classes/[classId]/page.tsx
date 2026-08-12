@@ -8,11 +8,18 @@ export default async function Dashboard({
   params: Promise<{ classId: string }>;
 }) {
   const { classId } = await params;
+  const supabase = await createClient();
+  const { data: resources } = await supabase
+    .from("resources")
+    .select("*")
+    .eq("class_id", classId)
+    .order("created_at", { ascending: false });
+  console.log(resources);
 
   return (
     <div>
       <AddResourceButton classId={classId} />
-      <NotesTable />{" "}
+      <NotesTable resources={resources} />{" "}
     </div>
   );
 }

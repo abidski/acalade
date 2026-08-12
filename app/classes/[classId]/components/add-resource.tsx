@@ -145,7 +145,9 @@ export function AddResourceButton({ classId }: { classId: string }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button variant="outline">+ Add Class</Button>} />
+      <DialogTrigger
+        render={<Button variant="outline">+ Add Resource</Button>}
+      />
       <DialogContent className="sm:max-w-sm">
         <form onSubmit={handleSubmit}>
           <DialogHeader>

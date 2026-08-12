@@ -48,7 +48,6 @@ export function SignupForm({
       return;
     }
 
-    router.push("/classes");
     router.refresh();
   }
   return (
@@ -114,6 +113,7 @@ export function SignupForm({
           />
           <FieldDescription>Please confirm your password.</FieldDescription>
         </Field>
+        {error && <p className="text-sm text-destructive">{error}</p>}
         <Field>
           <Button type="submit">Create Account</Button>
         </Field>
