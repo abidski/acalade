@@ -1,6 +1,7 @@
 import NotesTable from "@/app/classes/[classId]/components/table";
 import { AddResourceButton } from "@/app/classes/[classId]/components/add-resource";
 import { createClient } from "@/lib/supabase/server";
+import Back from "@/app/classes/[classId]/components/back";
 
 export default async function Dashboard({
   params,
@@ -18,6 +19,7 @@ export default async function Dashboard({
 
   return (
     <div>
+      <Back />
       <AddResourceButton classId={classId} />
       <NotesTable resources={resources} />{" "}
     </div>

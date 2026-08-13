@@ -1,6 +1,7 @@
 "use client";
 import { CardsSection } from "@/app/classes/components/card-section";
 
+import { Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -11,12 +12,46 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 export default function NotesTable({ resources }: { resources: [] | null }) {
   const [openingId, setOpeningId] = useState<string | null>(null);
+  const router = useRouter();
 
+  async function handleDelete(element) {
+    const supabase = createClient();
+
+    if (element.type === "pdf") {
+      await supabase.storage.from("resources").remove([element.url]);
+    }
+
+    const { error } = await supabase
+      .from("resources")
+      .delete()
+      .eq("id", element.id);
+
+    if (error) {
+      alert("Couldn't delete this resource.");
+      return;
+    }
+
+    router.refresh();
+  }
   async function handleClick(resource) {
     if (resource.type !== "pdf") {
       window.open(resource.url, "_blank");
@@ -60,6 +95,37 @@ export default function NotesTable({ resources }: { resources: [] | null }) {
             <TableCell className="font-medium">{element.title}</TableCell>
             <TableCell>{element.type}</TableCell>
             <TableCell>{element.updated_at}</TableCell>
+            <TableCell onClick={(e) => e.stopPropagation()}>
+              <AlertDialog>
+                <AlertDialogTrigger
+                  render={
+                    <Button
+                      variant="outline"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Trash2 />
+                    </Button>
+                  }
+                />
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      the resource from our servers.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => handleDelete(element)}>
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
